@@ -16,6 +16,9 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+    const [err, setErr] = useState("");
+  
+
   let [isLoading, setIsLoading] = useState(false)
 
 
@@ -44,7 +47,7 @@ const SignUp = () => {
             )
             console.log(data)
         } catch (error) {
-          console.log(error)
+          setErr(error?.response?.data?.message || "Something went Wrong") 
     } 
     finally{
             setIsLoading(false)
@@ -92,6 +95,12 @@ const SignUp = () => {
                 />
               }
                 </div>
+
+                   {
+                  err.length > 0 && <p className='text-red-500'>
+                    *{err}
+                  </p>
+                }
 
                 <button className='min-w-[150px] h-[60px] mt-[30px] rounded-full bg-white text-[19px]
                  text-black font-semibold'

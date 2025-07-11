@@ -11,6 +11,8 @@ const LogIn = () => {
    
   const [showPassword, setShowPassword] = useState(false)
 
+  const [err, setErr] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,7 +45,7 @@ const LogIn = () => {
              console.log(data)
 
         } catch (error) {
-          console.log(error)
+          setErr(error?.response?.data?.message || "Something went Wrong") 
         }finally{
             setIsLoading(false)
         }
@@ -84,6 +86,12 @@ const LogIn = () => {
                 />
               }
                 </div>
+
+                {
+                  err.length > 0 && <p className='text-red-500'>
+                    *{err}
+                  </p>
+                }
 
                 <button className='min-w-[150px] h-[60px] mt-[30px] rounded-full bg-white text-[19px]
                  text-black font-semibold'
