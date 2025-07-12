@@ -4,6 +4,9 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { server } from '../constant/config';
+import toast from "react-hot-toast"
+import { useDispatch } from 'react-redux';
+import { userExist } from '../redux/reducer/userReducer';
 
 
 
@@ -18,13 +21,17 @@ const LogIn = () => {
 
   let [isLoading, setIsLoading] = useState(false)
 
+    const dispatch = useDispatch();
+
 
   const navigate = useNavigate();
 
    const handleLogin = async (e) => {
         e.preventDefault();
 
+                let toastId = toast.loading("logging In...")
                 setIsLoading(true)
+
     
               const config = {
             withCredentials: true,
@@ -42,7 +49,11 @@ const LogIn = () => {
                 },
                 config
             );
-             console.log(data)
+             console.log(data?.message)
+             dispatch(userExist(data.user));
+             toast.success(data?.message,{
+              id: toastId
+             })
 
         } catch (error) {
           setErr(error?.response?.data?.message || "Something went Wrong") 
@@ -97,7 +108,7 @@ const LogIn = () => {
                  text-black font-semibold'
                  disabled={isLoading}
                  >
-                  Sign In
+                  { isLoading? "loading..." : "Sign In"}
                   </button>
 
               <p className='text-white text-[18px]'>

@@ -4,6 +4,9 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { server } from '../constant/config';
+import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
+import { userExist } from '../redux/reducer/userReducer';
 
 
 
@@ -21,12 +24,16 @@ const SignUp = () => {
 
   let [isLoading, setIsLoading] = useState(false)
 
+      const dispatch = useDispatch();
+
+
 
   const navigate = useNavigate();
   
   const handleSignup = async (e) => {
         e.preventDefault();
-
+      
+        let toastId = toast.loading("logging In...")
          setIsLoading(true)
 
          const config = {
@@ -46,6 +53,10 @@ const SignUp = () => {
                 config
             )
             console.log(data)
+             dispatch(userExist(data.user));
+             toast.success(data?.message,{
+              id: toastId
+             })
         } catch (error) {
           setErr(error?.response?.data?.message || "Something went Wrong") 
     } 
@@ -106,7 +117,7 @@ const SignUp = () => {
                  text-black font-semibold'
                  disabled={isLoading}
                  >
-                  Sign Up
+                  { isLoading? "loading..." : "Sign Up"}
                   </button>
 
                <p className='text-white text-[18px] '>

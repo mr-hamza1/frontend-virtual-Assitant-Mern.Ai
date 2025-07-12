@@ -1,15 +1,66 @@
-import { lazy } from "react"
-import { Routes, Route} from "react-router-dom"
+import { lazy, Suspense, useEffect } from "react"
+import { Toaster } from "react-hot-toast"
+import { Routes, Route, BrowserRouter} from "react-router-dom"
+import Loader from "./components/Loader"
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { userExist, userNotExist } from "./redux/reducer/userReducer";
+import ProtectRoute from "./auth/ProtectRoute"
+import Home from "./pages/Home";
+import Customize from "./pages/customize";
 
 const SignUp = lazy(() => import('./pages/SignUp'))
 const Login = lazy(() => import('./pages/Login'))
 
 const App = () => {
+
+    const {user, loading} = useSelector((state) => state.userReducer)
+
+    const dispatch = useDispatch();
+
+  useEffect(() => {
+ axios
+.get(`http://localhost:3000/api/v1/user/me`, { withCredentials: true })
+      .then(({ data }) =>  dispatch(userExist(data.user)))
+      .catch((err) => dispatch(userNotExist()));
+
+  }, [dispatch]);
+
   return (
-    <Routes>
-      <Route path="/signup" element={<SignUp/>} />
-      <Route path="/signin" element={<Login/>} />
-    </Routes>
+           loading? <Loader />:
+
+<BrowserRouter>
+       <Suspense fallback={<Loader/>}>
+     <Routes>
+    <Route
+            path="/signup"
+            element={
+              <ProtectRoute user={!user} redirect="/">
+                <SignUp />
+              </ProtectRoute>
+            }
+          /> 
+    <Route
+            path="/signin"
+            element={
+              <ProtectRoute user={!user} redirect="/">
+                <Login />
+              </ProtectRoute>
+            }
+          /> 
+          <Route element={<ProtectRoute user={user} redirect='/signin'/>}>  
+          <Route  path="/" element={<Home/>}/>
+          <Route  path="/customize" element={<Customize/>}/>
+          </Route>
+
+
+          
+             </Routes>
+    </Suspense>
+     <Toaster position="bottom-center" />
+
+</BrowserRouter>
+
     )
 }
 
