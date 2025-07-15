@@ -58,6 +58,7 @@ const SignUp = () => {
               id: toastId
              })
         } catch (error) {
+          toast.dismiss(toastId); 
           setErr(error?.response?.data?.message || "Something went Wrong") 
     } 
     finally{
@@ -87,14 +88,20 @@ const SignUp = () => {
           <input type="text" placeholder='Email'
            className='w-full h-[60px] outline-none border-2 border-white text-white bg-transparent
            placeholder-gray-300  rounded-full px-[20px] py-[10px] text-[18px]'
-           required onChange={(e)=> setEmail(e.target.value)}
+           required onChange={(e)=> {
+            setEmail(e.target.value)
+            setErr("")
+          }}
            />
 
            <div className='w-full h-[60px] outline-none border-2 border-white bg-transparent rounded-full relative'>
              <input type={`${showPassword ? "text" : "password"}`} placeholder='Password'
                className='w-full h-full outline-none border-2 border-white text-white bg-transparent
                placeholder-gray-300  rounded-full px-[20px] py-[10px] text-[18px]'
-               required onChange={(e)=> setPassword(e.target.value)}
+               required onChange={(e)=>{
+                 setPassword(e.target.value)
+                 setErr("")
+               }}
                 />  
               {
                 !showPassword?        
@@ -102,7 +109,8 @@ const SignUp = () => {
                onClick={() => setShowPassword(true)}
                 /> :
               <IoEyeOff  className='text-white top-[18px] right-[22px] w-[20px] h-[20px] absolute'
-               onClick={() => setShowPassword(false)}
+               onClick={() => 
+                  setShowPassword(false) }
                 />
               }
                 </div>

@@ -8,6 +8,7 @@ import { userExist, userNotExist } from "./redux/reducer/userReducer";
 import ProtectRoute from "./auth/ProtectRoute"
 import Home from "./pages/Home";
 import Customize from "./pages/customize";
+import CustomizeName from "./pages/CustomizeName";
 
 const SignUp = lazy(() => import('./pages/SignUp'))
 const Login = lazy(() => import('./pages/Login'))
@@ -24,7 +25,7 @@ const App = () => {
       .then(({ data }) =>  dispatch(userExist(data.user)))
       .catch((err) => dispatch(userNotExist()));
 
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return (
            loading? <Loader />:
@@ -35,7 +36,7 @@ const App = () => {
     <Route
             path="/signup"
             element={
-              <ProtectRoute user={!user} redirect="/">
+              <ProtectRoute user={!user} redirect="/customize">
                 <SignUp />
               </ProtectRoute>
             }
@@ -49,8 +50,9 @@ const App = () => {
             }
           /> 
           <Route element={<ProtectRoute user={user} redirect='/signin'/>}>  
-          <Route  path="/" element={<Home/>}/>
-          <Route  path="/customize" element={<Customize/>}/>
+                   <Route  path="/" element={<Home/>}/>
+                  <Route  path="/customize" element={<Customize/>}/>
+                  <Route  path="/customizeName" element={<CustomizeName/>}/>
           </Route>
 
 
