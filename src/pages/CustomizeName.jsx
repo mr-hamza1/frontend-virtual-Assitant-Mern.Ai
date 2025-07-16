@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { userAssitantName } from '../redux/reducer/userReducer';
+import { userAssitantName, userExist, userNotExist } from '../redux/reducer/userReducer';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { MdKeyboardBackspace } from "react-icons/md";
@@ -19,6 +19,14 @@ const CustomizeName = () => {
 
 
     const [assitantName , setAssitantName] = useState( assitantNameHome || "")
+
+    const refetchUser = () => {
+  axios
+    .get("http://localhost:3000/api/v1/user/me", { withCredentials: true })
+    .then(({ data }) => dispatch(userExist(data.user)))
+    .catch(() => dispatch(userNotExist()));
+};
+
 
 const handleUpdateAssistant = async () => {
   let toastId = toast.loading("Logging in...");
@@ -49,7 +57,7 @@ const handleUpdateAssistant = async () => {
     );
 
     console.log(data);
-    // dispatch(userExist(data.user));
+    refetchUser();
     toast.success(data?.message, { id: toastId });
 
   } catch (error) {
@@ -59,6 +67,7 @@ const handleUpdateAssistant = async () => {
     setIsLoading(false);
   }
 };
+
 
    
     useEffect(()=>{

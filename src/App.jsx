@@ -19,13 +19,13 @@ const App = () => {
 
     const dispatch = useDispatch();
 
-  useEffect(() => {
- axios
-.get(`http://localhost:3000/api/v1/user/me`, { withCredentials: true })
-      .then(({ data }) =>  dispatch(userExist(data.user)))
-      .catch((err) => dispatch(userNotExist()));
+useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/v1/user/me", { withCredentials: true })
+      .then(({ data }) => dispatch(userExist(data.user)))
+      .catch(() => dispatch(userNotExist()));
 
-  }, [dispatch, user]);
+}, [dispatch, user?.id]);
 
   return (
            loading? <Loader />:
